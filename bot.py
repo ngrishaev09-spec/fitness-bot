@@ -1,3 +1,4 @@
+import os
 import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
@@ -7,20 +8,20 @@ from aiogram.types import (
 )
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.client.session.aiohttp import AiohttpSession
-from aiogram.client.telegram import TelegramAPIServer
 
 # ============================================================
 # НАСТРОЙКИ
 # ============================================================
-import os
 TOKEN = os.environ.get('BOT_TOKEN')
 
-bot = Bot(token=TOKEN, session=session)
+if not TOKEN:
+    raise ValueError("Не задана переменная окружения BOT_TOKEN")
+
+bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 # ============================================================
-# КАРТИНКИ (файлы в папке с bot.py)
+# КАРТИНКИ
 # ============================================================
 IMG = {
     'welcome': 'welcome.jpg',
@@ -198,7 +199,7 @@ def make_restrictions_keyboard(selected=None):
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 # ============================================================
-# ОТПРАВКА ВОПРОСА С КАРТИНКОЙ
+# ОТПРАВКА ВОПРОСА
 # ============================================================
 async def send_question(message, step, chat_id=None):
     q = QUESTIONS[step]
